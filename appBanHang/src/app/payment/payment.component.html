@@ -1,0 +1,104 @@
+<div class="row">
+  <div class="col-md-2">
+
+  </div>
+  <div class="col-md-7">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Nhập từ khóa tìm kiếm</span>
+      </div>
+      <input type="text" class="form-control" (keyup)="onKeyUpSearch($event)" placeholder="Nhập từ khóa tìm kiếm...">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+
+  </div>
+  <div class="col-md-4">
+    <button type="button" id="btnOpenModal" class="btn btn-primary" data-title="Thêm mới chức vụ" data-modal="modal_Role_Add">Thêm mới</button>
+    &nbsp;
+    &nbsp;
+    <button type="button" id="btnSearch" (click)="Search()" class="btn btn-primary">Tìm kiếm</button>
+  </div>
+  <div class="col-md-4">
+
+  </div>
+
+</div>
+
+<table class="table table-striped mt-20">
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Mã đơn hàng</th>
+      <th scope="col">Loại thanh toán</th>
+      <th scope="col">Trạng thái thanh toán</th>
+      <th scope="col">Người mua</th>
+      <th scope="col">Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of Data; let i = index" [attr.data-index]="i">
+        <th scope="row">{{i+1}}</th>
+        <td [innerHTML]="item.transId"></td>
+        <td [innerHTML]="item.typeName"></td>
+        <td [innerHTML]="item.statusName"></td>
+        <td [innerHTML]="item.customer"></td>
+        <td>
+          <img class="img-action" (click)="OpenStatus(item.id)" title="Sửa" src="/assets/img/refresh.png"/>
+          &nbsp;
+          <img class="img-action" (click)="Edit(item.id)" title="Sửa" src="/assets/img/edit.png"/>
+          &nbsp;
+          <img class="img-action" (click)="OpenModalDelete(item.id)" title="Xóa" src="/assets/img/remove.png"/>
+        </td>
+    </tr>
+  </tbody>
+</table>
+
+<app-pagination (onPaginationChange)="onPaginationChange($event)" [pageLast]="pageLast"
+[page]="Request.page" [take]="Request.take" [totalArray]="totalArray" [total]="total" ></app-pagination>
+
+
+<button type="button" id="btnOpenUpdateStatus" class="btn btn-primary hiden" data-toggle="modal" data-target="#modal_UpdateStatus"></button>
+
+<div class="modal fade" id="modal_UpdateStatus" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title" >Thay đổi trạng thái đơn hàng</h5>
+        <button type="button" class="close" (click)="resetControl()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <button type="button" (click)="ChangeStatus(1)" class="btn btn-primary">Chờ xác nhận</button>
+          </div>
+          <div class="col-md-4">
+            <button type="button" (click)="ChangeStatus(2)" class="btn btn-warning">Đã xác nhận</button>
+          </div>
+          <div class="col-md-4">
+            <button type="button" (click)="ChangeStatus(3)" class="btn btn-info">Đang giao hàng</button>
+          </div>
+        </div>
+
+        <div class="row mt-10">
+          <div class="col-md-4">
+            <button type="button" (click)="ChangeStatus(4)" class="btn btn-success">Đã giao hàng</button>
+          </div>
+          <div class="col-md-4">
+            <button type="button" (click)="ChangeStatus(5)" class="btn btn-danger">Hủy</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnClose" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-delete (onDelete)="onDeleteItem()"></app-delete>

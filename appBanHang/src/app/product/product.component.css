@@ -1,0 +1,21 @@
+.imgdrop{
+  border: 2px solid #888484;
+  box-shadow: 1px 1px;
+}
+.customsize
+{
+  max-height: 500px;
+    overflow-y: scroll;
+}
+.IsActive
+{
+  margin: auto 0px;
+}
+.mt-10{
+  margin-top: 10px;
+}
+.img-actionActice
+{
+  width: 28px;
+  cursor: pointer;
+}

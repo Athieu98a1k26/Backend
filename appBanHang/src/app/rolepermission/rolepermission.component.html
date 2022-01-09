@@ -1,0 +1,108 @@
+<div class="row">
+  <div class="col-md-2">
+
+  </div>
+  <div class="col-md-7">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Nhập từ khóa tìm kiếm</span>
+      </div>
+      <input type="text" class="form-control" (keyup)="onKeyUpSearch($event)" placeholder="Nhập từ khóa tìm kiếm...">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+
+  </div>
+  <div class="col-md-4">
+    <button type="button" id="btnOpenModal" class="btn btn-primary" data-title="Thêm mới chức vụ" data-modal="modal_Role_Add">Thêm mới</button>
+    &nbsp;
+    &nbsp;
+    <button type="button" id="btnSearch" (click)="Search()" class="btn btn-primary">Tìm kiếm</button>
+  </div>
+  <div class="col-md-4">
+
+  </div>
+
+</div>
+
+<table class="table table-striped mt-20">
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Tên chức vụ</th>
+      <th scope="col">Quyền</th>
+      <th scope="col">Người tạo</th>
+      <th scope="col">Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of Data; let i = index" [attr.data-index]="i">
+        <th scope="row">{{i+1}}</th>
+        <td [innerHTML]="item.role.name"></td>
+        <td>
+          <div *ngFor="let permission of item.permission; let i = index" [attr.data-index]="i">
+            <div [innerHTML]="permission.name"></div>
+          </div>
+        </td>
+        <td [innerHTML]="item.createByName"></td>
+        <td>
+          <img class="img-action" (click)="Edit(item.id)" title="Sửa" src="/assets/img/edit.png"/>
+          &nbsp;
+          <img class="img-action" (click)="OpenModalDelete(item.id)" title="Xóa" src="/assets/img/remove.png"/>
+        </td>
+    </tr>
+  </tbody>
+</table>
+
+<app-pagination (onPaginationChange)="onPaginationChange($event)" [pageLast]="pageLast"
+[page]="Request.page" [take]="Request.take" [totalArray]="totalArray" [total]="total" ></app-pagination>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_Role_Add" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title" ></h5>
+        <button type="button" class="close" (click)="resetControl()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="form" method="post" (submit)="Save()">
+        <div class="modal-body">
+          <input type="text" class="form-control" hidden id="Id" formControlName="Id" [(ngModel)]="Item.Id">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Tên chức vụ<span class="red">(*)</span></label>
+              <ng-select  formControlName="RoleId" [items]="lstRole"
+                bindLabel="name"
+                bindValue="id"
+                [(ngModel)]="Item.RoleId">
+              </ng-select>
+              <div class="red" *ngIf="this.form.controls.RoleId.errors?.required && (this.form.touched)">Vui lòng chọn chức vụ!</div>
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">Danh sách quyền<span class="red">(*)</span></label>
+              <ng-select formControlName="PermissionId" [items]="lstPermission"
+                required
+                [multiple]="true"
+                bindLabel="name"
+                bindValue="id"
+                [(ngModel)]="Item.PermissionId">
+              </ng-select>
+              <div class="red" *ngIf="this.form.controls.PermissionId.errors?.required && (this.form.touched)">Vui lòng chọn quyền!</div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="resetControl()" id="btnClose" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="submit" [disabled]="(!form.valid)" class="btn btn-primary">Cập nhật</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+<app-delete (onDelete)="onDeleteItem()"></app-delete>

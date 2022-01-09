@@ -1,0 +1,305 @@
+<div class="row">
+  <div class="col-md-2">
+
+  </div>
+  <div class="col-md-7">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Nhập từ khóa tìm kiếm</span>
+      </div>
+      <input type="text" class="form-control" (keyup)="onKeyUpSearch($event)" placeholder="Nhập từ khóa tìm kiếm...">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+
+  </div>
+  <div class="col-md-4">
+    <button type="button" id="btnOpenModal" class="btn btn-primary" data-title="Thêm mới người dùng" data-modal="modal_User_Add">Thêm mới</button>
+    &nbsp;
+    &nbsp;
+    <button type="button" id="btnSearch" (click)="Search()" class="btn btn-primary">Tìm kiếm</button>
+  </div>
+  <div class="col-md-4">
+
+  </div>
+
+</div>
+
+<table class="table table-striped mt-20">
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Tên người dùng</th>
+      <th scope="col">Email</th>
+      <th scope="col" class="w10">Số điện thoại</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col" class="w10">Trang thái</th>
+      <th scope="col" class="w10">Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of Data; let i = index" [attr.data-index]="i">
+        <th scope="row">{{i+1}}</th>
+        <td [innerHTML]="item.userName"></td>
+        <td [innerHTML]="item.email"></td>
+        <td [innerHTML]="item.phoneNumber"></td>
+        <td>
+          <span [innerHTML]="item.address"> </span>
+          <span [innerHTML]="item.districtName"> </span>
+          <span [innerHTML]="item.provinceName"> </span>
+        </td>
+        <td>
+          <ng-container
+          *ngIf="item.isActive; then Dakichhoat; else Chuakichhoat">
+          </ng-container>
+
+          <ng-template #Dakichhoat>
+            <img class="img-actionActice" (click)="Active(item.id)" title="Đã kích hoạt" src="/assets/img/active.png"/>
+          </ng-template>
+          <ng-template #Chuakichhoat>
+            <img class="img-actionActice" (click)="NotActive(item.id)" title="Hủy kích hoạt" src="/assets/img/notactive.png"/>
+          </ng-template>
+
+        </td>
+        <td>
+          <img class="img-action" (click)="SetRole(item.id)" title="Phân quyền" src="/assets/img/setting.png"/>
+          &nbsp;
+          <img class="img-action" (click)="Edit(item.id)" title="Sửa" src="/assets/img/edit.png"/>
+          &nbsp;
+          <img class="img-action" (click)="OpenModalDelete(item.id)" title="Xóa" src="/assets/img/remove.png"/>
+        </td>
+    </tr>
+  </tbody>
+</table>
+
+<app-pagination (onPaginationChange)="onPaginationChange($event)" [pageLast]="pageLast"
+[page]="Request.page" [take]="Request.take" [totalArray]="totalArray" [total]="total" ></app-pagination>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_User_Add" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title" ></h5>
+        <button type="button" class="close" (click)="resetControl()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="form" method="post" (submit)="Save()">
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-4">
+                <input type="text" class="form-control" hidden id="id" formControlName="id" [(ngModel)]="Item.id">
+                <div class="form-group">
+                  <label for="userName">Tên người dùng <span class="red">(*)</span></label>
+                  <input type="text" class="form-control" id="userName" formControlName="userName" [(ngModel)]="Item.userName" placeholder="Nhập tên người dùng">
+                  <div class="red" *ngIf="this.form.controls.userName.errors?.required && (this.form.touched)">Vui lòng nhập tên người dùng!</div>
+                </div>
+
+
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="email">Email <span class="red">(*)</span></label>
+                  <input type="email" class="form-control" id="email" formControlName="email" [(ngModel)]="Item.email" placeholder="Nhập địa chỉ email">
+                  <div class="red" *ngIf="this.form.controls.email.errors?.required && (this.form.touched)">Vui lòng nhập email!</div>
+                  <div class="red" *ngIf="this.form.controls.email.errors?.email && (this.form.touched)">Email không hợp lệ!</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="phoneNumber">Số điện thoại</label>
+                  <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" [(ngModel)]="Item.phoneNumber" placeholder="Nhập số điện thoại">
+                  <div class="red" *ngIf="this.form.controls.phoneNumber.errors?.required && (this.form.touched)">Vui lòng nhập số điện thoại!</div>
+                  <div class="red" *ngIf="this.form.controls.phoneNumber.errors?.PhoneError && (this.form.touched)">Số điện thoại không hợp lệ!</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="provinceId">Tên thành phố</label>
+                  <ng-select formControlName="provinceId" [items]="lstProvinceId"
+                    bindLabel="name"
+                    bindValue="id"
+                    (change)="getDistrictByProvince($event)"
+                    [(ngModel)]="Item.provinceId">
+                  </ng-select>
+                </div>
+
+
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="DistrictId">Quận/Huyện</label>
+                  <ng-select formControlName="districtId" [items]="lstDistrictId"
+                    bindLabel="name"
+                    bindValue="id"
+                    notFoundText="Không tìm thấy kết quả"
+                    [(ngModel)]="Item.districtId">
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input [checked]="this.Item.sex==1" (change)="SetSex(1)" type="radio" class="form-check-input" id="nam" name="sex" value="1">
+                  Nam
+                  <label class="form-check-label" for="nam"></label>
+                </div>
+                <div class="form-check">
+                  <input  [checked]="this.Item.sex==2" (change)="SetSex(2)"  type="radio" class="form-check-input" id="nu" name="sex" value="2">
+                  Nữ
+                  <label class="form-check-label" for="nu"></label>
+                </div>
+                <div class="form-check">
+                  <input  [checked]="this.Item.sex==3" (change)="SetSex(3)"  type="radio" class="form-check-input" id="khac" name="sex" value="3">
+                  Khác
+                  <label class="form-check-label" for="khac"></label>
+                </div>
+
+              </div>
+              <!-- <div class="col-md-4">
+                <div class="form-group">
+                  <label for="CommuneId">Xã/Phường</label>
+                  <ng-select formControlName="CommuneId" [items]="lstCommuneId"
+                bindLabel="name"
+                bindValue="id"
+                [(ngModel)]="Item.CommuneId">
+              </ng-select>
+                </div>
+              </div> -->
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <label for="address">Địa chỉ</label>
+                <input type="text" class="form-control" id="address" formControlName="address" [(ngModel)]="Item.address" placeholder="Nhập địa chỉ">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="passWord">Mật khẩu <span class="red">(*)</span></label>
+                  <input type="password" class="form-control" id="passWord" formControlName="passWord" [(ngModel)]="Item.passWord" placeholder="Vui lòng nhập mật khẩu">
+                  <div class="red" *ngIf="this.form.controls.passWord.errors?.required && (this.form.touched)">Vui lòng nhập mật khẩu!</div>
+                </div>
+              </div>
+              <div class="col-md-4 IsActive">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="isActive" [(ngModel)]="Item.isActive" id="isActive">
+                  <label class="form-check-label" for="isActive">
+                    Hoạt động
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnClose" (click)="resetControl()" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="submit" [disabled]="!form.valid"  class="btn btn-primary">Cập nhật</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+<app-delete (onDelete)="onDeleteItem()"></app-delete>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_Active" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title">Thông báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          Bạn có muốn kích hoạt người dùng này?
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnCloseModalActive" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+          <button type="button" (click)="ActiveUser()" class="btn btn-success">Kích hoạt</button>
+        </div>
+
+    </div>
+  </div>
+</div>
+<button type="button" id="modalActive" hidden class="btn btn-primary" data-toggle="modal" data-target="#modal_Active">
+
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_NotActive" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title">Thông báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          Bạn có muốn hủy kích hoạt người dùng này?
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnCloseModalNotActive" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+          <button type="button" (click)="NotActiveUser()" class="btn btn-danger"> Hủy kích hoạt</button>
+        </div>
+
+    </div>
+  </div>
+</div>
+<button type="button" id="modalNotActive" hidden class="btn btn-primary" data-toggle="modal" data-target="#modal_NotActive">
+
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_UserRole_Add" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title" >Cập nhật chức vụ cho người dùng</h5>
+        <button type="button" class="close" (click)="resetControlRoleUser()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="formRole" method="post" (submit)="Save()">
+        <div class="modal-body">
+          <input type="text" class="form-control" hidden id="id" formControlName="id" [(ngModel)]="Item.id">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Tên chức vụ<span class="red">(*)</span></label>
+              <ng-select  formControlName="roleId" [items]="lstRole"
+                bindLabel="name"
+                bindValue="id"
+                [(ngModel)]="ItemUserRole.roleId">
+              </ng-select>
+              <div class="red" *ngIf="this.formRole.controls.roleId.errors?.required && (this.formRole.touched)">Vui lòng chọn chức vụ!</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="resetControlRoleUser()" id="btnCloseRoleUser" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="submit" [disabled]="(!formRole.valid)" class="btn btn-primary">Cập nhật</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+<button type="button" id="modalRoleUser" hidden class="btn btn-primary" data-toggle="modal" data-target="#modal_UserRole_Add">
+
+</button>

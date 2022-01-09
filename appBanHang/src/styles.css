@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+.red{
+  color: red;
+}
+.img-action{
+  width: 22px;
+  cursor: pointer;
+}
+.table-striped{
+  border: 2px solid #d5d0d0;
+}
+.table-striped .ng-star-inserted:hover{
+  background-color:#d5d0d0;
+}
+.footergr{
+  background: linear-gradient(to bottom, #ffffff 0%, #ccccb3 100%);
+}
+#accordionSidebar .nav-item:hover{
+  background: #3e64ba;
+}
+.mt-20
+{
+  margin-top:20px;
+}

@@ -1,0 +1,69 @@
+<ng-container
+*ngIf="total==0; then Khongcodulieu; else Cobanghi">
+</ng-container>
+
+<ng-template #Khongcodulieu>
+<div>
+  Không có bản ghi nào!
+</div>
+</ng-template>
+<ng-template #Cobanghi>
+<div>
+  Có {{total}} bản ghi!
+</div>
+</ng-template>
+<nav *ngIf="total>0" aria-label="Page navigation example">
+
+
+
+  <ul class="pagination th-positon">
+    <ng-container *ngIf="page==1; then renderFirstOne else renderFirstmultiple">
+    </ng-container>
+
+    <ng-template #renderFirstOne>
+        <li class="page-item disabled">
+          <a class="page-link disabled" href="#" tabindex="-1"><<</a>
+        </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1"><</a>
+      </li>
+    </ng-template>
+    <ng-template #renderFirstmultiple>
+        <li class="page-item">
+          <div class="page-link" (click)="getDataPage(1)" tabindex="-1"><<</div>
+        </li>
+        <li  class="page-item">
+          <div class="page-link" (click)="getDataPage(page - 1)" tabindex="-1"><</div>
+        </li>
+    </ng-template>
+    <ng-template ngFor let-item [ngForOf]="totalArray" let-i="index">
+      <ng-container *ngIf="item == page; then renderActive else renderNotactive">
+      </ng-container>
+      <ng-template #renderActive>
+        <li class="page-item active"><div class="page-link" (click)="getDataPage(item)">{{item}}</div></li>
+    </ng-template>
+    <ng-template #renderNotactive>
+      <li class="page-item"><div class="page-link" (click)="getDataPage(item)">{{item}}</div></li>
+    </ng-template>
+    </ng-template>
+    <ng-container *ngIf="page == pageLast; then renderLastOne else renderLastmultiple">
+    </ng-container>
+    <ng-template #renderLastOne>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">></a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#">>></a>
+        </li>
+    </ng-template>
+    <ng-template #renderLastmultiple>
+        <li class="page-item">
+          <div class="page-link" (click)="getDataPage(page+1)">></div>
+       </li>
+       <li class="page-item">
+           <div (click)="getDataPage(pageLast)" class="page-link" href="#">>></div>
+       </li>
+    </ng-template>
+
+  </ul>
+</nav>
