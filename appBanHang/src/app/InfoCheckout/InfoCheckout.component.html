@@ -1,0 +1,126 @@
+<form class="payment-block clearfix " [formGroup]="form" method="post" (submit)="Save()">
+  <div class="col-md-4 col-sm-12 col-xs-12 payment-step step2">
+    <h4>1. Địa chỉ thanh toán và giao hàng</h4>
+    <div class="step-preview clearfix">
+      <h2 class="title">Thông tin thanh toán</h2>
+      <!-- ngIf: CustomerId>0 -->
+      <!-- ngIf: CustomerId<=0 -->
+      <div class="form-block ng-scope">
+
+
+        <div class="form-group">
+          <label for="userName">Họ và tên <span class="red">(*)</span></label>
+          <input [readonly]="isDisable" type="text" class="form-control" id="userName" formControlName="userName" [(ngModel)]="Item.userName" placeholder="Họ &amp; Tên">
+          <div class="red" *ngIf="this.form.controls.userName.errors?.required && (this.form.controls.userName.dirty||this.form.touched)">Vui lòng nhập họ tên!</div>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Số điện thoại <span class="red">(*)</span></label>
+          <input [readonly]="isDisable" type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" [(ngModel)]="Item.phoneNumber" placeholder="Số điện thoại">
+          <div class="red" *ngIf="this.form.controls.phoneNumber.errors?.required && (this.form.controls.phoneNumber.dirty||this.form.touched)">Vui lòng nhập số điện thoại!</div>
+          <div class="red" *ngIf="this.form.controls.phoneNumber.errors?.PhoneError && (this.form.controls.phoneNumber.dirty||this.form.touched)">Số điện thoại không hợp lệ!</div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email <span class="red">(*)</span></label>
+          <input [readonly]="isDisable" type="email" class="form-control" id="email" formControlName="email" [(ngModel)]="Item.email" placeholder="Địa chỉ email">
+          <div class="red" *ngIf="this.form.controls.email.errors?.required && (this.form.controls.email.dirty||this.form.touched)">Vui lòng nhập địa chỉ email!</div>
+          <div class="red" *ngIf="this.form.controls.email.errors?.email && (this.form.controls.email.dirty||this.form.touched)">Email không hợp lệ!</div>
+        </div>
+        <div class="form-group">
+          <label for="provinceId">Tên thành phố/ Tỉnh<span class="red">(*)</span></label>
+          <ng-select [readonly]="isDisable" class="form-select" formControlName="provinceId" [items]="lstProvinceId"
+          bindLabel="name"
+          bindValue="id"
+          (change)="getDistrictByProvince($event)"
+          [(ngModel)]="Item.provinceId">
+        </ng-select>
+        <div class="red" *ngIf="this.form.controls.provinceId.errors?.required && (this.form.controls.provinceId.dirty||this.form.touched)">Vui lòng chọn tên thành phố!</div>
+        </div>
+        <div class="form-group">
+          <label for="districtId">Quận/Huyện <span class="red">(*)</span></label>
+          <ng-select [readonly]="isDisable" class="form-select" formControlName="districtId" [items]="lstDistrictId"
+            bindLabel="name"
+            bindValue="id"
+            notFoundText="Không tìm thấy kết quả"
+            [(ngModel)]="Item.districtId">
+          </ng-select>
+          <div class="red" *ngIf="this.form.controls.districtId.errors?.required && (this.form.controls.districtId.dirty||this.form.touched)">Vui lòng chọn tên quận/huyện!</div>
+        </div>
+        <div class="form-group">
+          <label for="address">Địa chỉ chi tiết <span class="red">(*)</span></label>
+          <input [readonly]="isDisable" type="text" class="form-control" id="address" formControlName="address" [(ngModel)]="Item.address" placeholder="Địa chỉ chi tiết">
+          <div class="red" *ngIf="this.form.controls.address.errors?.required && (this.form.controls.address.dirty||this.form.touched)">Vui lòng nhập địa chỉ chi tiết!</div>
+        </div>
+        <textarea [readonly]="isDisable" class="form-control" rows="2"
+          placeholder="Ghi chú đơn hàng" formControlName="description" [(ngModel)]="Item.description"></textarea>
+      </div>
+
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-12 col-xs-12 payment-step step3">
+    <h4>2. Thanh toán và vận chuyển</h4>
+    <div class="step-preview clearfix">
+      <h2 class="title">Vận chuyển</h2>
+      <div class="form-group ">
+
+      </div>
+      <h2 class="title">Phương thức thanh toán</h2>
+      <p>
+        <input [disabled]="true" type="radio" (click)="SetType(1)" name="type" id="MoMO" />
+        <label for="MoMO">Thanh toán qua MoMo</label>
+      </p>
+      <p>
+        <input [disabled]="true" type="radio" (click)="SetType(2)" name="type" id="None" checked/>
+        <label for="None">Thanh toán khi nhận hàng</label>
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-12 col-xs-12 payment-step step1">
+    <h4>3. Thông tin đơn hàng</h4>
+    <div class="step-preview">
+      <div class="cart-info">
+        <div class="cart-items">
+          <div class="cart-item clearfix" *ngFor="let item of lstItemProductCart">
+            <span class="image pull-left" style="margin-right:10px;">
+              <a href="#">
+                <img src="{{this.urlHost}}/{{item.urlImage}}" class="img-responsive">
+              </a>
+            </span>
+            <div class="product-info pull-left">
+              <span class="product-name">
+                <a href="#"
+                  >{{item.name}}</a> x <span >{{item.count}}</span>
+              </span>
+              <!-- ngIf: item.IsVariant==true -->
+            </div>
+            <span class="price ng-binding">{{item.totalPrice?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</span>
+          </div>
+        </div>
+        <div *ngIf="this.Item.transId!=''" class="total-price red">
+          Mã đơn hàng {{this.Item.transId}}
+        </div>
+        <div class="total-price">
+          Thành tiền <label > {{countAllTotalPrice?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</label>
+        </div>
+        <div class="shiping-price">
+          Phí vận chuyển <label >0 ₫</label>
+        </div>
+        <!-- <div class="btn-coupon hidden">
+          <a href="http://runecom02.runtime.vn/thanh-toan.html#" class="btn btn-primary"><span></span>Sử dụng
+            mã giảm giá </a>
+        </div> -->
+        <!-- <div class="use-coupon hidden">
+          <div class="form-group">
+            <input [readonly]="isDisable" placeholder="Nhập mã giảm giá" class="coupon-code form-control">
+            <a class="btn btn-primary">Sử dụng</a>
+          </div>
+        </div> -->
+        <div class="total-payment">
+          Cập nhật đơn hàng <span > {{countAllTotalPrice?.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</span>
+        </div>
+        <div class="button-submit">
+          <button [disabled]="isDisable" class="btn btn-primary" [disabled]="!this.form.valid" *ngIf="!isHidentButton" type="submit">Cập nhật đơn hàng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

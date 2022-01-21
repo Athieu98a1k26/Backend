@@ -35,6 +35,9 @@ import { NotFoundComponent } from './notFound/notFound.component';
 import { PaymentComponent } from './payment/payment.component';
 import { CustommerComponent } from './custommer/custommer.component';
 import { AboutComponent } from './about/about.component';
+import { InfoCheckoutComponent } from './InfoCheckout/InfoCheckout.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { CouterComponent } from './Couter/Couter.component';
 @NgModule({
   declarations: [	
     AppComponent,
@@ -61,7 +64,9 @@ import { AboutComponent } from './about/about.component';
       NotFoundComponent,
       PaymentComponent,
       CustommerComponent,
-      AboutComponent
+      AboutComponent,
+      InfoCheckoutComponent,
+      CouterComponent
    ],
   imports: [
     BrowserModule,
@@ -74,6 +79,7 @@ import { AboutComponent } from './about/about.component';
     HttpClientModule,
     AngularEditorModule,
     NgxDropzoneModule,
+    SweetAlert2Module.forRoot(),
     ToastrModule.forRoot({
 
       positionClass: 'toast-bottom-right'

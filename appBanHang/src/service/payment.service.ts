@@ -17,7 +17,9 @@ export class PaymentService extends BaseService {
   async DeleteItem(id:string){
     return await this.HttpGet(this.apiUrl+'DeleteItem?id='+id)
   }
-
+  GetPaymentById(paymentId:string){
+    return this.http.get(this.apiUrl + 'GetPaymentById?paymentId='+paymentId).toPromise();
+  }
   async GetByIdItem(id:string){
     return await this.HttpGet(this.apiUrl+'GetByIdItem?id='+id)
   }
@@ -26,5 +28,9 @@ export class PaymentService extends BaseService {
   }
   async ChangeStatus(data:any){
     return await this.HttpPost(this.apiUrl+'ChangeStatus',data);
+  }
+  //
+  async DeletePayment(Id:string){
+    return await this.HttpPost(this.apiUrl+'DeletePayment',{Id});
   }
 }

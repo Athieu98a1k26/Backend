@@ -18,6 +18,7 @@ export class PaymentComponent implements OnInit {
   };
   Data:any;
   total:number=0;
+  lstItemShow:any;
   HtmlPagination:string='';
   Request:any={
     keyword:'',
@@ -70,7 +71,7 @@ export class PaymentComponent implements OnInit {
   {
     this.spinner.show();
     document.getElementById('btnCloseModalDelete')?.click();
-    this.paymentService.DeleteItem(this.ItemDelete).then((rs:any)=>{
+    this.paymentService.DeletePayment(this.ItemDelete).then((rs:any)=>{
       if(rs.status==0){
         this.toastr.success(rs.message);
         this.Search();
@@ -111,12 +112,15 @@ export class PaymentComponent implements OnInit {
   }
 
   Edit(id:string){
-    this.paymentService.GetByIdItem(id).then((rs:any)=>{
-      this.Item.Id=rs.data.id;
-      this.Item.name=rs.data.name;
-      this.Item.description=rs.data.description;
-      document.getElementById('btnOpenModal')?.click();
-    })
+    this.paymentService.GetPaymentById(id).then((rs:any)=>{
+      if(rs.status==0) {
+        this.lstItemShow=rs.data;
+        document.getElementById('btnOpenEditPayment')?.click();
+      }})
+  }
+  eventUpdate(){
+    document.getElementById('btnOpenEditPayment')?.click();
+    this.toastr.success("Cập nhật thành công");
   }
   ChangeStatus(status:number){
     this.Request.status=status;

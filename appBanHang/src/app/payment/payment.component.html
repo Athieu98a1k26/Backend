@@ -102,3 +102,28 @@
   </div>
 </div>
 <app-delete (onDelete)="onDeleteItem()"></app-delete>
+
+
+<button type="button" id="btnOpenEditPayment" class="btn btn-primary hiden" data-toggle="modal" data-target="#modal_btnOpenEditPayment"></button>
+
+
+<div class="modal fade" id="modal_btnOpenEditPayment" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="ModelTitle" class="modal-title" >Thông tin đơn hàng</h5>
+        <button type="button" class="close" (click)="resetControl()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body payment-content">
+        <app-InfoCheckout (eventUpdate)="eventUpdate()" [isDisable]="false" [isHidentButton]="false" [lstItemShow]="lstItemShow"></app-InfoCheckout>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnClose" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>

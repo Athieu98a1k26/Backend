@@ -20,10 +20,12 @@
     "@angular/router": "~12.2.0",
     "@kolkov/angular-editor": "^1.2.0",
     "@ng-select/ng-select": "^8.1.1",
+    "@sweetalert2/ngx-sweetalert2": "^10.0.0",
     "ngx-dropzone": "^3.0.0",
     "ngx-spinner": "^13.0.0",
     "ngx-toastr": "^14.2.1",
     "rxjs": "~6.6.0",
+    "sweetalert2": "^11.3.6",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5",
     "zone.js": "~0.11.4"
